@@ -12,7 +12,7 @@ import { Course } from '../../../models/course';
 })
 export class InstructorDashboardComponent implements OnInit {
   courses: Course[] = [];
-  instructorId: number | null = null;
+  instructorId: any;
 
   constructor(private courseService: CourseService, private catalog: CatalogService) { }
 
@@ -22,14 +22,14 @@ export class InstructorDashboardComponent implements OnInit {
 
     if (user && user.role === 'instructor') {
       if (user.instructorId) {
-        this.instructorId = Number(user.instructorId);
+        this.instructorId = (user.instructorId);
         this.loadCourses();
       } else {
         // map user -> instructor record via email
         this.catalog.getInstructors().subscribe(list => {
           const found = list.find(i => (String(i.email) || '').toLowerCase() === (user.email || '').toLowerCase());
           if (found) {
-            this.instructorId = Number(found.id);
+            this.instructorId = (found.id);
             user.instructorId = this.instructorId;
             localStorage.setItem('user', JSON.stringify(user));
           }
@@ -51,12 +51,13 @@ export class InstructorDashboardComponent implements OnInit {
         next: (data) => (this.courses = data),
         error: (err) => console.error(err)
       });
-    } else {
-      // fallback: load all courses (or none). I keep load-all so dev can still see something.
-      this.courseService.getCourses().subscribe({
-        next: (data) => (this.courses = data),
-        error: (err) => console.error(err)
-      });
-    }
+    } 
+    // else {
+    //   // fallback: load all courses (or none). I keep load-all so dev can still see something.
+    //   this.courseService.getCourses().subscribe({
+    //     next: (data) => (this.courses = data),
+    //     error: (err) => console.error(err)
+    //   });
+    // }
   }
 }

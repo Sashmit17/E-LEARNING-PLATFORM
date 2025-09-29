@@ -18,7 +18,7 @@ export class ViewEnrollmentsComponent implements OnInit {
   studentsMap = new Map<any, Student>();
   selectedCourseId?: number|string;
   enrollments: Enrollment[] = [];
-  instructorId: number | null = null;
+  instructorId: any;
 
   constructor(
     private catalog: CatalogService,
@@ -36,13 +36,13 @@ export class ViewEnrollmentsComponent implements OnInit {
 
     if (user && user.role === 'instructor') {
       if (user.instructorId) {
-        this.instructorId = Number(user.instructorId);
+        this.instructorId = (user.instructorId);
         this.loadInstructorCourses();
       } else {
         this.catalog.getInstructors().subscribe(list => {
           const found = list.find(i => (String(i.email) || '').toLowerCase() === (user.email || '').toLowerCase());
           if (found) {
-            this.instructorId = Number(found.id);
+            this.instructorId = (found.id);
             user.instructorId = this.instructorId;
             localStorage.setItem('user', JSON.stringify(user));
           }

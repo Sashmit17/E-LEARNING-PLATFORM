@@ -15,8 +15,8 @@ export class AddCourseComponent implements OnInit {
   courseForm!: FormGroup;
   message = '';
   courses: Course[] = [];
-  editingCourseId: number | null = null;
-  instructorId: number | null = null; // resolved instructor id for logged-in user
+  editingCourseId: any=null;
+  instructorId: any; // resolved instructor id for logged-in user
 
   constructor(
     private fb: FormBuilder,
@@ -27,17 +27,17 @@ export class AddCourseComponent implements OnInit {
   ngOnInit(): void {
     this.courseForm = this.fb.group({
       title: ['', Validators.required],
-      instructorId: [null, Validators.required],
+      instructorId: ['', Validators.required],
       domain: ['', Validators.required],
       level: ['', Validators.required],
-      durationHrs: [null],
-      tags: [''],
+      durationHrs: ['', Validators.required],
+      tags: ['', Validators.required],
       description: [''],
       price: [null],
       rating: [null],
       studentsCount: [null],
-      thumbnail: [''],
-      videoUrl: ['']
+      thumbnail: ['', Validators.required],
+      videoUrl: ['', Validators.required]
     });
 
     // Resolve instructor id from logged-in user
@@ -47,7 +47,7 @@ export class AddCourseComponent implements OnInit {
     if (user && user.role === 'instructor') {
       // if mapping already stored on user, use it
       if (user.instructorId) {
-        this.instructorId = Number(user.instructorId);
+        this.instructorId = (user.instructorId);
         this.courseForm.patchValue({ instructorId: this.instructorId });
         this.loadCourses(this.instructorId);
       } else {
@@ -55,7 +55,7 @@ export class AddCourseComponent implements OnInit {
         this.catalog.getInstructors().subscribe(list => {
           const found = list.find(i => (String(i.email) || '').toLowerCase() === (user.email || '').toLowerCase());
           if (found) {
-            this.instructorId = Number(found.id);
+            this.instructorId = (found.id);
             this.courseForm.patchValue({ instructorId: this.instructorId });
             // persist mapping on localStorage user for faster lookup next time
             user.instructorId = this.instructorId;
@@ -76,13 +76,14 @@ export class AddCourseComponent implements OnInit {
     }
   }
 
-  loadCourses(instructorId?: number) {
+  loadCourses(instructorId?: number|string) {
     if (instructorId) {
       this.courseService.getCourses({ instructorId }).subscribe({
         next: (data) => (this.courses = data),
         error: (err) => console.error(err)
       });
-    } else {
+    } 
+    else {
       this.courseService.getCourses().subscribe({
         next: (data) => (this.courses = data),
         error: (err) => console.error(err)
@@ -109,8 +110,8 @@ export class AddCourseComponent implements OnInit {
       instructorId: Number(finalInstructorId),
       domain: fv.domain,
       level: fv.level,
-      // durationHrs: fv.durationHrs ? +fv.durationHrs : undefined,
-      // tags: tagsArray,
+      durationHrs: fv.durationHrs ? +fv.durationHrs : undefined,
+      tags: tagsArray,
       description: fv.description,
       price: fv.price ? +fv.price : undefined,
       rating: fv.rating ? +fv.rating : undefined,
@@ -120,6 +121,7 @@ export class AddCourseComponent implements OnInit {
     };
 
     if (this.editingCourseId) {
+      console.log(this.editingCourseId);
       this.courseService.updateCourse(this.editingCourseId, courseData).subscribe({
         next: () => {
           this.message = ' Course updated successfully';
@@ -149,7 +151,7 @@ export class AddCourseComponent implements OnInit {
 
   //✅ delete course
   remove(courseId: number | string) {
-    const id = Number(courseId);
+    const id = (courseId);
     this.courseService.deleteCourse(id).subscribe({
       next: () => {
         this.message = '🗑 Course deleted successfully';
@@ -164,7 +166,8 @@ export class AddCourseComponent implements OnInit {
 
   edit(course: Course) {
     // make sure we only allow editing instructor's own courses (we're already only loading theirs)
-    this.editingCourseId = Number(course.id);
+    this.editingCourseId = (course.id);
+    //console.log(this.editingCourseId);
     this.courseForm.patchValue({
       title: course.title,
       instructorId: course.instructorId,

@@ -15,15 +15,15 @@ export class CourseService {
     return this.api.get<Course[]>('courses', filter);
   }
 
-  getCourseById(id: number): Observable<Course> {
+  getCourseById(id: number|string): Observable<Course> {
     return this.api.get<Course>(`courses/${id}`);
   }
 
-  updateCourse(id: number, course: Partial<Course>): Observable<Course> {
+  updateCourse(id: number|string, course: Partial<Course>): Observable<Course> {
     return this.api.put<Course>(`courses/${id}`, course);
   }
 
-  deleteCourse(id: number): Observable<void> {
+  deleteCourse(id: number|string): Observable<void> {
     return this.api.delete<void>(`courses/${id}`);
   }
 }

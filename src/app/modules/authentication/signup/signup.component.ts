@@ -32,6 +32,7 @@ export class SignupComponent {
  signUp() {
   if (this.signupForm.valid) {
     const newUser = this.signupForm.value;
+    console.log(newUser);
 
     this.http.post<any>('http://localhost:3000/users', newUser).subscribe(user => {
       if (user.role === 'student') {

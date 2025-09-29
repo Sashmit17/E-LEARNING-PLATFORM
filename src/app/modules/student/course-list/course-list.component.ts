@@ -1,8 +1,8 @@
-// src/app/modules/student/course-list/course-list.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { CatalogService } from '../../../services/catalog.service';
 import { EnrollmentService } from '../../../services/enrollment.service';
-import { Course } from '../../../models/course';
+import { Course } from '../../../models/course'; 
 
 @Component({
   selector: 'app-course-list',
@@ -22,7 +22,9 @@ export class CourseListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const storedUser = localStorage.getItem('user');
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    
     if (user && user.role === 'student') {
       this.selectedStudentId = user.id;
     }
@@ -31,13 +33,32 @@ export class CourseListComponent implements OnInit {
 
   load() {
     this.catalog.getCourses({ search: this.search })
-      .subscribe(c => (this.courses = c));
+      .subscribe(c => {
+   
+        this.courses = c.map(course => ({
+          ...course,
+          isEnrolled: false 
+        }));
+      });
   }
 
-  enroll(courseId: number) {
-    this.message = 'Processing...';
-    this.enrollSvc.enroll(this.selectedStudentId, courseId).subscribe((res: any) => {
-      this.message = res.success ? '✅ Enrollment successful' : '⚠️ ' + res.message;
+ 
+  enroll(course: Course) { 
+    course.isEnrolled = true; 
+    
+    this.message = `Processing enrollment for ${course.title}...`;
+    
+    this.enrollSvc.enroll(this.selectedStudentId, course.id).subscribe({
+      next: (res: any) => {
+        this.message = res.success 
+          ? `Enrollment successful for ${course.title}!` 
+          : `Enrollment failed: ${res.message}`;
+      },
+      error: (err) => {
+        course.isEnrolled = false; 
+        this.message = `Error enrolling in ${course.title}. Please try again.`;
+        console.error('Enrollment error:', err);
+      }
     });
   }
 }

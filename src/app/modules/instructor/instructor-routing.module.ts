@@ -12,7 +12,6 @@ const routes: Routes = [
   { path: '', component: InstructorDashboardComponent },
   { path: 'add-course', component: AddCourseComponent },
   { path: 'view-enrollments', component: ViewEnrollmentsComponent },
-  // {path: 'add-assessment', component:AssessmentFormComponent},
   {path: 'add-assessment', component:TeacherAssessmentListComponent},
   {path:'teacher/assessments/new', component:AssessmentFormComponent},
     {path: 'instructor/add-assessment', component:TeacherAssessmentListComponent},

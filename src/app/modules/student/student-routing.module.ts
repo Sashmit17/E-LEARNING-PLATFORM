@@ -10,7 +10,7 @@ import { TakeAssessmentComponent } from './student-assessment/take-assessment/ta
 import { StudentNotificationsComponent } from './student-notifications/student-notifications.component';
 
 const routes: Routes = [
-  { path: '', component: StudentDashboardComponent },
+  { path: '', component: StudentDashboardComponent},
   { path: 'courses', component: CourseListComponent },
   { path: 'enrollments', component: MyEnrollmentsComponent },
   { path: 'player/:courseId', component: CoursePlayerComponent },

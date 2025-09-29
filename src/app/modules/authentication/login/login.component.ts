@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login-component',
   standalone: false,
-  templateUrl: './login-component.component.html',
-  styleUrl: './login-component.component.css'
+  templateUrl: './login.component.html',
+  styleUrl:'./login.component.css'
 })
 export class LoginComponentComponent {
   public loginForm!:FormGroup
@@ -32,15 +32,16 @@ export class LoginComponentComponent {
         alert("Login Success");
 
 
-        // 🔑 store only essential session info
+        //  store only essential session info
         localStorage.setItem('user', JSON.stringify({
           id: user.id,
           role: user.role,
-          email: user.email
+          email: user.email,
+          name:user.fullname
         }));
 
 
-        // 🔀 redirect based on role, passing ID in query params
+        //  redirect based on role, passing ID in query params
         if (user.role === 'student') {
           this.router.navigate(['student'], { queryParams: { studentId: user.id } });
         } else if (user.role === 'instructor') {

@@ -31,21 +31,43 @@
       "id": "1002",
       "name": "Ms. Rao",
       "email": "rao@uni.edu"
+    },
+    {
+      "id": "0a99",
+      "name": "Vishal Chandravanshi",
+      "email": "vishal@uni.edu"
+    },
+    {
+      "id": "729f",
+      "name": "ws",
+      "email": "asds@gmail"
+    },
+    {
+      "id": "1a80",
+      "name": "Sk",
+      "email": "ASYBAYt@gmail"
     }
   ],
   "courses": [
     {
+      "id": "101",
       "title": "Intro to Web Programming Basics",
       "instructorId": 1001,
       "domain": "Web",
       "level": "Beginner",
+      "durationHrs": 20,
+      "tags": [
+        "HTML",
+        "CSS",
+        "JS",
+        "web"
+      ],
       "description": "Foundations of web development with practical labs.",
       "price": 49.99,
       "rating": 4.7,
       "studentsCount": 15420,
-      "thumbnail": "https://utfs.io/f/mMbSyFqocdYGoyWHUeXA7npSGrhZX9NcIHO3JgUjB16z02ER",
-      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
-      "id": "101"
+      "thumbnail": "https://i.ytimg.com/vi/cUhfAwiPJY4/maxresdefault.jpg",
+      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4"
     },
     {
       "id": "102",
@@ -55,7 +77,8 @@
       "level": "Intermediate",
       "durationHrs": 24,
       "tags": [
-        "safsfsa"
+        "angular",
+        "frontend"
       ],
       "description": "Components, services, routing, and forms.",
       "thumbnail": "https://miro.medium.com/v2/resize:fit:1400/1*bMgQ8MhbnQexpqHgIgBJPA.png",
@@ -72,7 +95,8 @@
       "level": "Beginner",
       "durationHrs": 30,
       "tags": [
-        "dd"
+        "dsa",
+        "Data Structure"
       ],
       "description": "Zero to Hero in DSA.",
       "thumbnail": "https://i.ytimg.com/vi/XyDKchVvlCg/maxresdefault.jpg",
@@ -100,19 +124,6 @@
       "id": "7833"
     },
     {
-      "id": "b272",
-      "title": "sssss",
-      "instructorId": 1001,
-      "domain": "ssss",
-      "level": "sssss",
-      "tags": [
-        "ssss"
-      ],
-      "description": "sss",
-      "thumbnail": "sss",
-      "videoUrl": "ssss"
-    },
-    {
       "id": "c9ae",
       "title": "Python",
       "instructorId": 1002,
@@ -124,6 +135,22 @@
       ],
       "description": "A complete python course for beginners.",
       "thumbnail": "https://i.ytimg.com/vi/m0LdKZ-prto/maxresdefault.jpg",
+      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    {
+      "id": "7d08",
+      "title": "Introduction to c#",
+      "instructorId": null,
+      "domain": "Programming",
+      "level": "beginners",
+      "durationHrs": 8,
+      "tags": [
+        "c",
+        "cpp",
+        "c#"
+      ],
+      "description": "This is a beginners friendly course. Anyone with basic knowledge on C, CPP can also enroll in this course. ",
+      "thumbnail": "https://academy.hackthebox.com/storage/modules/228/logo.png",
       "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4"
     }
   ],
@@ -191,6 +218,54 @@
       "enrollmentDate": "2025-09-24",
       "progress": 0,
       "status": "enrolled"
+    },
+    {
+      "id": "df35",
+      "studentId": "3",
+      "courseId": "103",
+      "enrollmentDate": "2025-09-27",
+      "progress": 0,
+      "status": "enrolled"
+    },
+    {
+      "id": "1e6a",
+      "studentId": "3",
+      "courseId": "102",
+      "enrollmentDate": "2025-09-27",
+      "progress": 0,
+      "status": "enrolled"
+    },
+    {
+      "id": "9849",
+      "studentId": "1",
+      "courseId": "103",
+      "enrollmentDate": "2025-09-27",
+      "progress": 0,
+      "status": "enrolled"
+    },
+    {
+      "id": "564b",
+      "studentId": 0,
+      "courseId": "102",
+      "enrollmentDate": "2025-09-29",
+      "progress": 0,
+      "status": "enrolled"
+    },
+    {
+      "id": "0091",
+      "studentId": "1",
+      "courseId": "7d08",
+      "enrollmentDate": "2025-09-29",
+      "progress": 0,
+      "status": "enrolled"
+    },
+    {
+      "id": "d274",
+      "studentId": "1",
+      "courseId": "7833",
+      "enrollmentDate": "2025-09-29",
+      "progress": 0,
+      "status": "enrolled"
     }
   ],
   "users": [
@@ -241,11 +316,33 @@
       "mobile": "1111111111",
       "password": "Rizwan@123",
       "role": "student"
+    },
+    {
+      "id": "0a99",
+      "fullname": "Vishal Chandravanshi",
+      "email": "vishal@uni.edu",
+      "mobile": "9012345678",
+      "password": "Vishal@123",
+      "role": "instructor"
+    },
+    {
+      "id": "729f",
+      "fullname": "ws",
+      "email": "asds@gmail",
+      "mobile": "9012345678",
+      "password": "dsadasd12e@@S",
+      "role": "instructor"
+    },
+    {
+      "id": "1a80",
+      "fullname": "Sk",
+      "email": "ASYBAYt@gmail",
+      "mobile": "1234567890",
+      "password": "asdfgS@H",
+      "role": "instructor"
     }
   ],
-  "assessments": [
-    
-  ],
+  "assessments": [],
   "announcements": [
     {
       "id": "1",
@@ -284,5 +381,4 @@
       "read": false
     }
   ]
-
 }

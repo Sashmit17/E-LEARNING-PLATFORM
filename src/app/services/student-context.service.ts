@@ -1,18 +1,18 @@
 // src/app/services/student-context.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+// import { BehaviorSubject } from 'rxjs'; // <-- REMOVED
 
 @Injectable({ providedIn: 'root' })
 export class StudentContextService {
-  // holds the currently-selected student id (null = not selected yet)
-  private _studentId = new BehaviorSubject<number | null>(null);
-  studentId$ = this._studentId.asObservable();
+  // ✅ SIMPLIFIED: Using a simple private property instead of BehaviorSubject
+  private _studentId: number | null = null;
+  // studentId$ = this._studentId.asObservable(); // <-- REMOVED
 
   setStudentId(id: number | null) {
-    this._studentId.next(id);
+    this._studentId = id;
   }
 
   getStudentId(): number | null {
-    return this._studentId.value;
+    return this._studentId;
   }
 }

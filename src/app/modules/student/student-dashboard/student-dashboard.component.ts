@@ -2,11 +2,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CatalogService } from '../../../services/catalog.service';
 import { EnrollmentService } from '../../../services/enrollment.service';
-import { Student } from '../../../models/student';
 import { Course } from '../../../models/course';
 import { Enrollment } from '../../../models/enrollment';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+// import { forkJoin } from 'rxjs'; // <-- REMOVED
 
 @Component({
   selector: 'app-student-dashboard',
@@ -15,8 +14,8 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./student-dashboard.component.css']
 })
 export class StudentDashboardComponent implements OnInit {
-  students: Student[] = [];
   selectedStudentId: number = 0;
+  selectedStudentName!:string;
 
   coursesById = new Map<number, Course>();
   enrollments: (Enrollment & { course?: Course })[] = [];
@@ -26,6 +25,11 @@ export class StudentDashboardComponent implements OnInit {
   learningHours = 0;
   certificates = 0;
   averageProgress = 0;
+  
+  // ✅ Flags/Counters for dashboard logic
+  private enrollmentData: Enrollment[] = [];
+  private coursesData: Course[] = [];
+  private pendingCalls = 0;
 
   constructor(
     private catalog: CatalogService,
@@ -37,10 +41,12 @@ export class StudentDashboardComponent implements OnInit {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     if (user && user.role === 'student') {
       this.selectedStudentId = user.id;
+      this.selectedStudentName = user.name;
     }
     this.loadDashboard();
   }
 
+  // ✅ SIMPLIFIED: Replaced forkJoin with simple service calls and a merge function
   loadDashboard() {
     if (!this.selectedStudentId) {
       this.enrollments = [];
@@ -48,31 +54,58 @@ export class StudentDashboardComponent implements OnInit {
       this.computeStats();
       return;
     }
+    
+    // Reset flags/data
+    this.pendingCalls = 2;
+    this.enrollmentData = [];
+    this.coursesData = [];
+    this.enrollments = [];
+    
+    // Call 1: Get Courses
+    this.catalog.getCourses({}).subscribe(
+      (data) => {
+        this.coursesData = data;
+        this.checkAndMerge();
+      },
+      (err) => { console.error('Courses error:', err); this.checkAndMerge(); }
+    );
+    
+    // Call 2: Get Enrollments
+    this.enrollSvc.getEnrollmentsByStudent(this.selectedStudentId).subscribe(
+      (data) => {
+        this.enrollmentData = data;
+        this.checkAndMerge();
+      },
+      (err) => { console.error('Enrollment error:', err); this.checkAndMerge(); }
+    );
+  }
+  
+  private checkAndMerge() {
+    this.pendingCalls--;
 
-    forkJoin({
-      courses: this.catalog.getCourses({}),
-      enrollments: this.enrollSvc.getEnrollmentsByStudent(this.selectedStudentId)
-    }).subscribe(({ courses, enrollments }) => {
+    if (this.pendingCalls === 0) {
       this.coursesById.clear();
-      courses.forEach(c => this.coursesById.set(Number(c.id), c));
+      this.coursesData.forEach(c => this.coursesById.set(Number(c.id), c));
 
-      this.enrollments = (enrollments || []).map(e => ({
+      this.enrollments = (this.enrollmentData || []).map(e => ({
         ...e,
         course: this.coursesById.get(Number(e.courseId))
       }));
-
+      
       this.computeStats();
-    });
+    }
   }
 
   computeStats() {
     this.enrolledCount = this.enrollments.length;
     this.learningHours = this.enrollments.reduce((sum, e) => {
-      const dur = this.coursesById.get(Number(e.courseId))?.durationHrs ?? 0;
+      // Use the course data from the merged list
+      const course = this.coursesById.get(Number(e.courseId));
+      const dur = course?.durationHrs ?? 0;
       return sum + dur;
     }, 0);
 
-    this.certificates = 0; // no certificates in db.json
+    this.certificates = this.enrollments.filter(e => e.status === 'completed').length; // Basic cert calculation
 
     this.averageProgress = this.enrollments.length
       ? Math.round(this.enrollments.reduce((s, e) => s + (e.progress ?? 0), 0) / this.enrollments.length)

@@ -5,7 +5,7 @@ import { CatalogService } from '../../../services/catalog.service';
 import { Enrollment } from '../../../models/enrollment';
 import { Course } from '../../../models/course';
 import { Router } from '@angular/router';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription } from 'rxjs'; // Keep Subscription for cleanup
 
 @Component({
   selector: 'app-my-enrollments',
@@ -17,6 +17,12 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
   studentId: number | null = null;
   enrollments: (Enrollment & { course?: Course })[] = [];
   private sub = new Subscription();
+  private allCourses: Course[] = [];
+  
+  // ✅ Flags/Counters to track API completion
+  private enrollmentData: Enrollment[] = [];
+  private coursesData: Course[] = [];
+  private pendingCalls = 2;
 
   constructor(
     private enrollSvc: EnrollmentService,
@@ -37,25 +43,53 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  // ✅ SIMPLIFIED: Replaced forkJoin with simple service calls and a merge function
   load() {
     if (!this.studentId) {
       this.enrollments = [];
       return;
     }
-
-    // Load enrollments + courses in parallel
+    
+    // Reset flags/data
+    this.pendingCalls = 2;
+    this.enrollmentData = [];
+    this.coursesData = [];
+    this.enrollments = [];
+    
+    // Call 1: Get Enrollments
     this.sub.add(
-      forkJoin({
-        enrollments: this.enrollSvc.getEnrollmentsByStudent(this.studentId),
-        courses: this.catalog.getCourses({})
-      }).subscribe(({ enrollments, courses }) => {
-        const courseMap = new Map(courses.map(c => [Number(c.id), c]));
-        this.enrollments = enrollments.map(e => ({
-          ...e,
-          course: courseMap.get(Number(e.courseId))
-        }));
-      })
+      this.enrollSvc.getEnrollmentsByStudent(this.studentId).subscribe(
+        (data) => {
+          this.enrollmentData = data;
+          this.checkAndMerge();
+        },
+        (err) => { console.error('Enrollment error:', err); this.checkAndMerge(); }
+      )
     );
+    
+    // Call 2: Get All Courses
+    this.sub.add(
+      this.catalog.getCourses({}).subscribe(
+        (data) => {
+          this.coursesData = data;
+          this.checkAndMerge();
+        },
+        (err) => { console.error('Courses error:', err); this.checkAndMerge(); }
+      )
+    );
+  }
+  
+  private checkAndMerge() {
+    this.pendingCalls--;
+
+    if (this.pendingCalls === 0) {
+      const courseMap = new Map(this.coursesData.map(c => [Number(c.id), c]));
+      
+      this.enrollments = this.enrollmentData.map(e => ({
+        ...e,
+        course: courseMap.get(Number(e.courseId))
+      }));
+    }
   }
 
   continueLearning(courseId: number) {

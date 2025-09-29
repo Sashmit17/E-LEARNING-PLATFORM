@@ -11,12 +11,6 @@ export const studentGuard: CanActivateFn = () => {
     return true;
   }
 
-  // allow dev mode fallback (remove in production!)
-  if (!user) {
-    console.warn('No user in localStorage. Allowing access for development.');
-    return true;
-  }
-
   alert('Access denied. Only students can view this page.');
   router.navigateByUrl('/login');
   return false;

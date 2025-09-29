@@ -4,7 +4,6 @@
   <div class="mb-3">
     <div class="row g-2 align-items-end">
       <div class="col-md-6">
-        <label class="form-label small">Search</label>
         <input class="form-control" [(ngModel)]="search" placeholder="Search by title or tag" />
       </div>
 
@@ -14,13 +13,16 @@
     </div>
   </div>
 
-  <p class="text-success small mb-2" *ngIf="message">{{ message }}</p>
+  <p class="text-success fs-4 mb-2" *ngIf="message">{{ message }}</p>
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     <div class="col" *ngFor="let c of courses">
       <div class="card h-100 shadow-sm">
-        <img *ngIf="c.thumbnail" [src]="c.thumbnail" alt="{{c.title}}" class="card-img-top" />
 
+        <img *ngIf="c.thumbnail" 
+             [src]="c.thumbnail" 
+             alt="{{c.title}}" 
+             class="card-img-top" />
         <div class="card-body d-flex flex-column">
           <div class="mb-2">
             <div class="fw-semibold">{{ c.title }}</div>
@@ -35,20 +37,16 @@
             <span class="badge bg-light text-dark border" *ngFor="let t of c.tags">{{ t }}</span>
           </div>
 
-          <div class="mt-auto">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="fw-bold text-success">${{ c.price }}</span>
-              <small class="text-muted">
-                ⭐ {{ c.rating }} ({{ c.studentsCount }} students)
-              </small>
-            </div>
-
-            <button 
-              class="btn btn-sm btn-success w-100"
-              (click)="enroll(c.id)">
+          <button *ngIf="c.isEnrolled === false"
+              class="btn btn-sm btn-success w-100 p-2 mt-3"
+              (click)="enroll(c)"> 
               Enroll
             </button>
-          </div>
+            <button *ngIf="c.isEnrolled"
+              class="btn btn-sm btn-primary w-100 p-2 mt-3"
+              disabled> 
+              Enrolled
+            </button>
         </div>
       </div>
     </div>
