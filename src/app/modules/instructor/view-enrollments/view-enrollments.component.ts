@@ -27,10 +27,10 @@ export class ViewEnrollmentsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // load students map for display
+  
     this.catalog.getStudents().subscribe(ss => ss.forEach(s => this.studentsMap.set(String(s.id), s)));
 
-    // resolve instructorId from logged-in user (localStorage) or map via email
+    
     const userRaw = localStorage.getItem('user');
     const user = userRaw ? JSON.parse(userRaw) : null;
 
@@ -53,7 +53,7 @@ export class ViewEnrollmentsComponent implements OnInit {
         });
       }
     } else {
-      // not instructor -> don't load instructor courses (or load all)
+      
       this.courseService.getCourses().subscribe(c => this.courses = c);
     }
   }

@@ -5,6 +5,7 @@
         <div class="text-center mb-4">
           <h1>Sign Up</h1>
           <h6>Register Yourself</h6>
+
         </div>
 
         <form [formGroup]="signupForm" (ngSubmit)="signUp()">
@@ -12,10 +13,14 @@
           <div class="mb-3">
             <label for="Name" class="form-label text-white">Full Name</label>
             <input formControlName="fullname" type="text" class="form-control" id="Name">
-            <div *ngIf="f['fullname'].invalid && (f['fullname'].touched || f['fullname'].dirty)" class="text-danger mt-1">
+
+            <div *ngIf="signupForm.controls['fullname'].invalid && (f['fullname'].touched || f['fullname'].dirty)" class="text-danger mt-1">
+
               <small *ngIf="f['fullname'].errors && f['fullname'].errors['required']">*Full name is required.</small>
                <small *ngIf="f['fullname'].errors && f['fullname'].errors['pattern']">*Only letters and spaces allowed.</small> 
+
             </div>
+
           </div>
 
           <!-- Mobile Number -->
@@ -56,6 +61,7 @@
               <small *ngIf="f['password'].errors && f['password'].errors['minlength']">*Minimum 8 characters required.</small><br>
                <small *ngIf="f['password'].errors && f['password'].errors['pattern']">*Must contain at least one uppercase letter and one special character.</small> 
             </div>
+            
           </div>
 
           <button type="submit" class="btn btn-primary">Sign Up</button>

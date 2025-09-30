@@ -32,7 +32,6 @@ export class LoginComponentComponent {
         alert("Login Success");
 
 
-        //  store only essential session info
         localStorage.setItem('user', JSON.stringify({
           id: user.id,
           role: user.role,
@@ -41,7 +40,6 @@ export class LoginComponentComponent {
         }));
 
 
-        //  redirect based on role, passing ID in query params
         if (user.role === 'student') {
           this.router.navigate(['student'], { queryParams: { studentId: user.id } });
         } else if (user.role === 'instructor') {

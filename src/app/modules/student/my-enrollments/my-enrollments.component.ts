@@ -1,11 +1,10 @@
-// src/app/modules/student/my-enrollments/my-enrollments.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EnrollmentService } from '../../../services/enrollment.service';
 import { CatalogService } from '../../../services/catalog.service';
 import { Enrollment } from '../../../models/enrollment';
 import { Course } from '../../../models/course';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs'; // Keep Subscription for cleanup
+import { Subscription } from 'rxjs'; 
 
 @Component({
   selector: 'app-my-enrollments',
@@ -19,7 +18,6 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
   private sub = new Subscription();
   private allCourses: Course[] = [];
   
-  // ✅ Flags/Counters to track API completion
   private enrollmentData: Enrollment[] = [];
   private coursesData: Course[] = [];
   private pendingCalls = 2;
@@ -43,20 +41,16 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  // ✅ SIMPLIFIED: Replaced forkJoin with simple service calls and a merge function
   load() {
     if (!this.studentId) {
       this.enrollments = [];
       return;
     }
-    
-    // Reset flags/data
     this.pendingCalls = 2;
     this.enrollmentData = [];
     this.coursesData = [];
     this.enrollments = [];
-    
-    // Call 1: Get Enrollments
+  
     this.sub.add(
       this.enrollSvc.getEnrollmentsByStudent(this.studentId).subscribe(
         (data) => {
@@ -67,7 +61,7 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
       )
     );
     
-    // Call 2: Get All Courses
+
     this.sub.add(
       this.catalog.getCourses({}).subscribe(
         (data) => {

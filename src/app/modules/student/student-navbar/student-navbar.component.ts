@@ -1,4 +1,3 @@
-// src/app/modules/student/student-navbar/student-navbar.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 

@@ -1,4 +1,4 @@
-// src/app/modules/instructor/add-course/add-course.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CourseService } from '../../../services/course.service';
@@ -16,7 +16,7 @@ export class AddCourseComponent implements OnInit {
   message = '';
   courses: Course[] = [];
   editingCourseId: any=null;
-  instructorId: any; // resolved instructor id for logged-in user
+  instructorId: any; 
 
   constructor(
     private fb: FormBuilder,
@@ -40,29 +40,24 @@ export class AddCourseComponent implements OnInit {
       videoUrl: ['', Validators.required]
     });
 
-    // Resolve instructor id from logged-in user
     const userRaw = localStorage.getItem('user');
     const user = userRaw ? JSON.parse(userRaw) : null;
 
     if (user && user.role === 'instructor') {
-      // if mapping already stored on user, use it
       if (user.instructorId) {
         this.instructorId = (user.instructorId);
         this.courseForm.patchValue({ instructorId: this.instructorId });
         this.loadCourses(this.instructorId);
       } else {
-        // fetch instructor by email and map
         this.catalog.getInstructors().subscribe(list => {
           const found = list.find(i => (String(i.email) || '').toLowerCase() === (user.email || '').toLowerCase());
           if (found) {
             this.instructorId = (found.id);
             this.courseForm.patchValue({ instructorId: this.instructorId });
-            // persist mapping on localStorage user for faster lookup next time
             user.instructorId = this.instructorId;
             localStorage.setItem('user', JSON.stringify(user));
             this.loadCourses(this.instructorId);
           } else {
-            // fallback: load all courses
             this.loadCourses();
           }
         }, err => {
@@ -71,7 +66,6 @@ export class AddCourseComponent implements OnInit {
         });
       }
     } else {
-      // not logged-in as instructor -> just load all (admin dev mode)
       this.loadCourses();
     }
   }
@@ -102,7 +96,7 @@ export class AddCourseComponent implements OnInit {
       ? fv.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t.length > 0)
       : [];
 
-    // ensure we use resolved instructorId if available
+
     const finalInstructorId = this.instructorId ?? (fv.instructorId ? +fv.instructorId : undefined);
 
     const courseData: Omit<Course, 'id'> = {
@@ -149,7 +143,7 @@ export class AddCourseComponent implements OnInit {
     }
   }
 
-  //✅ delete course
+
   remove(courseId: number | string) {
     const id = (courseId);
     this.courseService.deleteCourse(id).subscribe({
@@ -165,7 +159,6 @@ export class AddCourseComponent implements OnInit {
   }
 
   edit(course: Course) {
-    // make sure we only allow editing instructor's own courses (we're already only loading theirs)
     this.editingCourseId = (course.id);
     //console.log(this.editingCourseId);
     this.courseForm.patchValue({

@@ -19,6 +19,11 @@
       "id": "b2f3",
       "name": "Rizwan Shaik",
       "email": "rizwan@example.com"
+    },
+    {
+      "id": "fe8a",
+      "name": "Vishal Chandravanshi",
+      "email": "vishal@gmail.com"
     }
   ],
   "instructors": [
@@ -31,21 +36,6 @@
       "id": "1002",
       "name": "Ms. Rao",
       "email": "rao@uni.edu"
-    },
-    {
-      "id": "0a99",
-      "name": "Vishal Chandravanshi",
-      "email": "vishal@uni.edu"
-    },
-    {
-      "id": "729f",
-      "name": "ws",
-      "email": "asds@gmail"
-    },
-    {
-      "id": "1a80",
-      "name": "Sk",
-      "email": "ASYBAYt@gmail"
     }
   ],
   "courses": [
@@ -138,19 +128,34 @@
       "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4"
     },
     {
-      "id": "7d08",
       "title": "Introduction to c#",
-      "instructorId": null,
-      "domain": "Programming",
-      "level": "beginners",
-      "durationHrs": 8,
+      "instructorId": 1002,
+      "domain": "Programmin",
+      "level": "intermediate",
+      "durationHrs": 10,
       "tags": [
         "c",
         "cpp",
         "c#"
       ],
-      "description": "This is a beginners friendly course. Anyone with basic knowledge on C, CPP can also enroll in this course. ",
+      "description": "Anyone with basic knowledge on C can join.",
       "thumbnail": "https://academy.hackthebox.com/storage/modules/228/logo.png",
+      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+      "id": "5a86"
+    },
+    {
+      "id": "4ffe",
+      "title": "UI/UX designing",
+      "instructorId": null,
+      "domain": "Graphics designing",
+      "level": "beginners",
+      "durationHrs": 7,
+      "tags": [
+        "ui",
+        "ux"
+      ],
+      "description": "Beginners friendly course for all.",
+      "thumbnail": "https://www.creative-tim.com/blog/content/images/2022/07/UX-design-courses.jpg",
       "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4"
     }
   ],
@@ -244,26 +249,18 @@
       "status": "enrolled"
     },
     {
-      "id": "564b",
-      "studentId": 0,
-      "courseId": "102",
-      "enrollmentDate": "2025-09-29",
-      "progress": 0,
-      "status": "enrolled"
-    },
-    {
-      "id": "0091",
-      "studentId": "1",
-      "courseId": "7d08",
-      "enrollmentDate": "2025-09-29",
-      "progress": 0,
-      "status": "enrolled"
-    },
-    {
       "id": "d274",
       "studentId": "1",
       "courseId": "7833",
       "enrollmentDate": "2025-09-29",
+      "progress": 0,
+      "status": "enrolled"
+    },
+    {
+      "id": "12a7",
+      "studentId": "fbde",
+      "courseId": "4ffe",
+      "enrollmentDate": "2025-09-30",
       "progress": 0,
       "status": "enrolled"
     }
@@ -318,28 +315,12 @@
       "role": "student"
     },
     {
-      "id": "0a99",
+      "id": "fe8a",
       "fullname": "Vishal Chandravanshi",
-      "email": "vishal@uni.edu",
+      "email": "vishal@gmail.com",
       "mobile": "9012345678",
       "password": "Vishal@123",
-      "role": "instructor"
-    },
-    {
-      "id": "729f",
-      "fullname": "ws",
-      "email": "asds@gmail",
-      "mobile": "9012345678",
-      "password": "dsadasd12e@@S",
-      "role": "instructor"
-    },
-    {
-      "id": "1a80",
-      "fullname": "Sk",
-      "email": "ASYBAYt@gmail",
-      "mobile": "1234567890",
-      "password": "asdfgS@H",
-      "role": "instructor"
+      "role": "student"
     }
   ],
   "assessments": [],

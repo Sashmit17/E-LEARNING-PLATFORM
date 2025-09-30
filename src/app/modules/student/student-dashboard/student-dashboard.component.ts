@@ -46,7 +46,6 @@ export class StudentDashboardComponent implements OnInit {
     this.loadDashboard();
   }
 
-  // ✅ SIMPLIFIED: Replaced forkJoin with simple service calls and a merge function
   loadDashboard() {
     if (!this.selectedStudentId) {
       this.enrollments = [];
@@ -55,13 +54,11 @@ export class StudentDashboardComponent implements OnInit {
       return;
     }
     
-    // Reset flags/data
     this.pendingCalls = 2;
     this.enrollmentData = [];
     this.coursesData = [];
     this.enrollments = [];
     
-    // Call 1: Get Courses
     this.catalog.getCourses({}).subscribe(
       (data) => {
         this.coursesData = data;
@@ -70,7 +67,6 @@ export class StudentDashboardComponent implements OnInit {
       (err) => { console.error('Courses error:', err); this.checkAndMerge(); }
     );
     
-    // Call 2: Get Enrollments
     this.enrollSvc.getEnrollmentsByStudent(this.selectedStudentId).subscribe(
       (data) => {
         this.enrollmentData = data;
@@ -99,20 +95,18 @@ export class StudentDashboardComponent implements OnInit {
   computeStats() {
     this.enrolledCount = this.enrollments.length;
     this.learningHours = this.enrollments.reduce((sum, e) => {
-      // Use the course data from the merged list
       const course = this.coursesById.get(Number(e.courseId));
       const dur = course?.durationHrs ?? 0;
       return sum + dur;
     }, 0);
 
-    this.certificates = this.enrollments.filter(e => e.status === 'completed').length; // Basic cert calculation
+    this.certificates = this.enrollments.filter(e => e.status === 'completed').length;
 
     this.averageProgress = this.enrollments.length
       ? Math.round(this.enrollments.reduce((s, e) => s + (e.progress ?? 0), 0) / this.enrollments.length)
       : 0;
   }
 
-  // helper for template
   courseFor(e: Enrollment): Course | undefined {
     return this.coursesById.get(Number(e.courseId));
   }

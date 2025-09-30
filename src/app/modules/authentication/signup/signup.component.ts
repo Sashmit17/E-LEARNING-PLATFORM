@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import{FormGroup,FormBuilder, Validators, AbstractControl} from '@angular/forms'
+import{FormGroup,FormBuilder, Validators} from '@angular/forms'
 import { Router } from '@angular/router';
 
 @Component({
@@ -60,6 +60,7 @@ export class SignupComponent {
 
 
  get f() {
+  console.log(this.signupForm.controls);
   return this.signupForm.controls;
 }
 }

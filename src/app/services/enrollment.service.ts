@@ -1,8 +1,8 @@
-// src/app/services/enrollment.service.ts
+
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Enrollment } from '../models/enrollment';
-import { Observable, of } from 'rxjs'; // Keep Observable/of for consistency
+import { Observable, of } from 'rxjs'; 
 
 @Injectable({ providedIn: 'root' })
 export class EnrollmentService {
@@ -20,9 +20,9 @@ export class EnrollmentService {
     return this.api.get<Enrollment[]>('enrollments', { courseId });
   }
 
-  // ✅ SIMPLIFIED: Replaced map/switchMap with nested subscriptions and manual logic
+
   enroll(studentId: number, courseId: number): Observable<any> {
-    // 1. Check if already enrolled (First API call)
+ 
     return new Observable(observer => {
       this.getEnrollments().subscribe({
         next: (list) => {
@@ -32,11 +32,11 @@ export class EnrollmentService {
           );
 
           if (exists) {
-            // If exists, immediately return the 'already enrolled' message
+           
             observer.next({ success: false, message: 'Already enrolled' });
             observer.complete();
           } else {
-            // 2. If not enrolled, create new enrollment (Second API call)
+            
             const newEnrollment: Enrollment = {
               studentId,
               courseId,
@@ -62,8 +62,6 @@ export class EnrollmentService {
       });
     });
   }
-
-  // ✅ SIMPLIFIED: Update methods using nested subscriptions (without switchMap)
   updateProgress(id: number, progress: number): Observable<Enrollment> {
     return new Observable(observer => {
       this.api.get<Enrollment>(`enrollments/${id}`).subscribe(

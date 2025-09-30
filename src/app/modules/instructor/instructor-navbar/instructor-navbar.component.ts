@@ -1,4 +1,3 @@
-// src/app/modules/instructor/instructor-navbar/instructor-navbar.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -24,6 +23,6 @@ export class InstructorNavbarComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+    this.router.navigate(['']);
   }
 }

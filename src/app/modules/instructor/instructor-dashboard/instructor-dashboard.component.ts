@@ -1,4 +1,3 @@
-// src/app/modules/instructor/instructor-dashboard/instructor-dashboard.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CourseService } from '../../../services/course.service';
 import { CatalogService } from '../../../services/catalog.service';
@@ -13,6 +12,7 @@ import { Course } from '../../../models/course';
 export class InstructorDashboardComponent implements OnInit {
   courses: Course[] = [];
   instructorId: any;
+  selectedInstructorName:any;
 
   constructor(private courseService: CourseService, private catalog: CatalogService) { }
 
@@ -23,9 +23,10 @@ export class InstructorDashboardComponent implements OnInit {
     if (user && user.role === 'instructor') {
       if (user.instructorId) {
         this.instructorId = (user.instructorId);
+        this.selectedInstructorName=(user.name);
+        console.log(this.selectedInstructorName);
         this.loadCourses();
       } else {
-        // map user -> instructor record via email
         this.catalog.getInstructors().subscribe(list => {
           const found = list.find(i => (String(i.email) || '').toLowerCase() === (user.email || '').toLowerCase());
           if (found) {
@@ -40,7 +41,6 @@ export class InstructorDashboardComponent implements OnInit {
         });
       }
     } else {
-      // not an instructor (for dev) -> load nothing or all
       this.loadCourses();
     }
   }
@@ -52,12 +52,5 @@ export class InstructorDashboardComponent implements OnInit {
         error: (err) => console.error(err)
       });
     } 
-    // else {
-    //   // fallback: load all courses (or none). I keep load-all so dev can still see something.
-    //   this.courseService.getCourses().subscribe({
-    //     next: (data) => (this.courses = data),
-    //     error: (err) => console.error(err)
-    //   });
-    // }
   }
 }
