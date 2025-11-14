@@ -1,4 +1,4 @@
-// src/app/modules/student/my-enrollments/my-enrollments.component.ts
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EnrollmentService } from '../../../services/enrollment.service';
 import { CatalogService } from '../../../services/catalog.service';
@@ -43,7 +43,6 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Load enrollments + courses in parallel
     this.sub.add(
       forkJoin({
         enrollments: this.enrollSvc.getEnrollmentsByStudent(this.studentId),
@@ -59,7 +58,6 @@ export class MyEnrollmentsComponent implements OnInit, OnDestroy {
   }
 
   continueLearning(courseId: number, enrollmentId: number | undefined) {
-  // navigate and pass enrollmentId so CoursePlayer can skip lookup
   this.router.navigate(['student', 'player', Number(courseId)], {
     queryParams: { enrollmentId: enrollmentId }
   });

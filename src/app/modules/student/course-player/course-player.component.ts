@@ -1,4 +1,3 @@
-// src/app/modules/student/course-player/course-player.component.ts
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService } from '../../../services/catalog.service';
@@ -6,7 +5,7 @@ import { EnrollmentService } from '../../../services/enrollment.service';
 import { Course } from '../../../models/course';
 import { Enrollment } from '../../../models/enrollment';
 import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AssessmentService } from '../../../services/assessment.service';
 
 import { AnnouncementService } from '../../../services/announcement.service';
@@ -29,11 +28,14 @@ export class CoursePlayerComponent implements OnInit {
   currentRating: number | null = null;
   announcements: Announcement[] = [];
 
-  // UI state
+  simpleToastMessage: string = '';
+  showSimpleToast: boolean = false;
+
+  
   currentTab: 'overview'|'notes'|'reviews'|'assessments'|'announcements' = 'overview';
   notesText = '';
   assessments: any[] = [];
-  reviews: any[] = []; // simple local shape { user, rating, comment, date }
+  reviews: any[] = []; 
 
   @ViewChild('videoRef') videoRef!: ElementRef<HTMLVideoElement>;
 
@@ -65,17 +67,26 @@ export class CoursePlayerComponent implements OnInit {
     this.loadNotes();
     this.resolveEnrollment().subscribe();
 
-    // fetch assessments related to this course (if your service supports it)
     this.assessmentSvc.getAssessments().subscribe(list => {
-      // if your assessments have courseId, filter, otherwise show all
+      
       this.assessments = (list || []).filter((a: any) => !a.courseId || Number(a.courseId) === Number(this.courseId));
     }, err => {
       this.assessments = [];
     });
 
-    // placeholder: fetch reviews - if you have a reviews endpoint replace this
-    this.reviews = []; // can be loaded from NotificationService or a new ReviewService
+   
+    this.reviews = []; 
   }
+
+  private showSimpleNotification(message: string) {
+     this.simpleToastMessage = message;
+     this.showSimpleToast = true;
+
+     
+     setTimeout(() => {
+      this.showSimpleToast = false;
+      }, 1500);
+   }
 
   setTab(t: 'overview'|'notes'|'reviews'|'assessments'|'announcements') {
     this.currentTab = t;
@@ -132,17 +143,11 @@ export class CoursePlayerComponent implements OnInit {
       next: (updated: any) => {
         this.enrollment = updated;
         this.refreshFlags();
-        // auto-switch to notes or assessments to encourage interaction
-        this.setTab('notes');
       },
       error: (err) => {
         console.error('markWatched failed', err);
       }
     });
-  }
-
-  onTimeUpdate() {
-    // optional: you could save lastWatchedPosition periodically (every N seconds)
   }
 
   markDoneClicked() {
@@ -151,12 +156,11 @@ export class CoursePlayerComponent implements OnInit {
       next: (updated: any) => {
         this.enrollment = updated;
         this.refreshFlags();
-        alert('Course marked as done — you can now rate it.');
+        this.showSimpleNotification('Course marked as done — you can now rate it.');
       },
       error: (err) => {
         console.error(err);
-        alert(err?.error?.message || 'Cannot mark done: ensure you watched the course first.');
-      }
+        this.showSimpleNotification(err?.error?.message || 'Cannot mark done: ensure you watched the course first.');      }
     });
   }
 
@@ -167,19 +171,18 @@ export class CoursePlayerComponent implements OnInit {
       next: (updated: any) => {
         this.enrollment = updated;
         this.refreshFlags();
-        alert('Thanks for rating!');
+        this.showSimpleNotification('Thanks for rating!');
         if (this.course) {
           this.catalog.getCourse(this.courseId).subscribe(c => this.course = c);
         }
       },
       error: (err) => {
         console.error('rating failed', err);
-        alert('Failed to save rating.');
+        this.showSimpleNotification('Failed to save rating.');
       }
     });
   }
 
-  // notes helpers (localStorage fallback)
   private getNotesKey() {
     return `course_${this.courseId}_notes_student_${this.studentId || 'guest'}`;
   }
@@ -198,11 +201,10 @@ export class CoursePlayerComponent implements OnInit {
     try {
       const k = this.getNotesKey();
       localStorage.setItem(k, this.notesText || '');
-      alert('Notes saved locally.');
-      // TODO: call backend API to persist notes if available
+      this.showSimpleNotification('Notes saved locally.');
     } catch (e) {
       console.error(e);
-      alert('Failed to save notes.');
+      this.showSimpleNotification('Failed to save notes.');
     }
   }
 
@@ -221,17 +223,15 @@ export class CoursePlayerComponent implements OnInit {
   }
 
   continueLearning() {
-    // jump to the video or first lesson - simple behavior: scroll to video
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   downloadResources() {
-    // placeholder: if course.preRequisite is a url, open it
     if (this.course?.preRequisite) {
       console.log(this.course.preRequisite);
       window.open('http://localhost:8080/' + this.course.preRequisite, '_blank');
     } else {
-      alert('No resources available for download.');
+      this.showSimpleNotification('No resources available for download.');
     }
   }
 }

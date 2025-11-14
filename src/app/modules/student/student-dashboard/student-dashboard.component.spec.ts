@@ -47,34 +47,34 @@ describe('StudentDashboardComponent', () => {
   });
 
   it('should set selected student from localStorage and load dashboard with stats', () => {
-    // arrange - set user in localStorage
+    
     localStorage.setItem('user', JSON.stringify({ role: 'STUDENT', id: 42, fullName: 'Test Student' }));
 
-    // spies return observables
+    
     catalogSpy.getCourses.and.returnValue(of(mockCourses));
     enrollSpy.getEnrollmentsByStudent.and.returnValue(of(mockEnrollments));
 
-    // act
+    
     fixture = TestBed.createComponent(StudentDashboardComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges(); // triggers ngOnInit -> loadDashboard
+    fixture.detectChanges(); 
 
-    // assert basic selection
+    
     expect(component.selectedStudentId).toBe(42);
     expect(component.selectedStudentName).toBe('Test Student');
 
-    // forkJoin should have been called through the spies
+    
     expect(catalogSpy.getCourses).toHaveBeenCalled();
     expect(enrollSpy.getEnrollmentsByStudent).toHaveBeenCalledWith(42);
 
-    // stats computed from mock data:
+    
     expect(component.enrolledCount).toBe(2);
-    // learningHours = durationHrs of course id 10 + id 20 = 5 + 10 = 15
+    
     expect(component.learningHours).toBe(15);
-    // averageProgress = round((50 + 100)/2) = 75
+    
     expect(component.averageProgress).toBe(75);
 
-    // courseFor helper
+    
     const firstEnrollment = component.enrollments[0];
     const linkedCourse = component.courseFor(firstEnrollment);
     expect(linkedCourse).toBeDefined();
@@ -85,7 +85,7 @@ describe('StudentDashboardComponent', () => {
     fixture = TestBed.createComponent(StudentDashboardComponent);
     component = fixture.componentInstance;
 
-    // ensure no student selected
+    
     component.selectedStudentId = 0;
     component.enrollments = [{ id: 99, studentId: 0, courseId: 999, progress: 10, enrollmentDate: '2025-01-03' }];
     component.coursesById.set(999, { id: 999, title: 'X', instructorId: 0, domain: '', level: '', durationHrs: 100, tags: '', description: '', price: 0, rating: 0, studentsCount: 0, thumbnail: '', videoUrl: '' });

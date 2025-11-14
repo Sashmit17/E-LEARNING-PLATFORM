@@ -4,7 +4,6 @@ import { ApiService } from './api.service';
 import { Course } from '../models/course';
 import { Student } from '../models/student';
 import { Instructor } from '../models/instructor';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })

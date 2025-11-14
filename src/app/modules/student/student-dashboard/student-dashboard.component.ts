@@ -21,10 +21,9 @@ export class StudentDashboardComponent implements OnInit {
   coursesById = new Map<number, Course>();
   enrollments: (Enrollment & { course?: Course })[] = [];
 
-  // stats
+  
   enrolledCount = 0;
   learningHours = 0;
-  certificates = 0;
   averageProgress = 0;
 
   constructor(
@@ -40,8 +39,11 @@ export class StudentDashboardComponent implements OnInit {
       this.selectedStudentName = user.fullName;
     }
     this.loadDashboard();
+    console.log(this.newarray);
   }
-
+  oldarray:number[]=[1,2,3];
+  newarray:number[]=[...this.oldarray];
+  
   loadDashboard() {
     if (!this.selectedStudentId) {
       this.enrollments = [];
@@ -69,9 +71,8 @@ export class StudentDashboardComponent implements OnInit {
 computeStats() {
   this.enrolledCount = this.enrollments.length;
 
-  // sum of progress (ensure numeric)
   const totalProgress = this.enrollments.reduce((sum, e) => {
-    const p = Number((e as any).progress); // defensive cast in case progress is string
+    const p = Number((e as any).progress); 
     return sum + (isNaN(p) ? 0 : p);
   }, 0);
 
@@ -80,13 +81,11 @@ computeStats() {
     return sum + dur;
   }, 0);
 
-  this.certificates = 0; // same as before
 
   this.averageProgress = this.enrollments.length ? Math.round(totalProgress / this.enrollments.length) : 0;
 }
 
-
-  // helper for template
+ 
   courseFor(e: Enrollment): Course | undefined {
     return this.coursesById.get(Number(e.courseId));
   }

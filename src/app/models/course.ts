@@ -14,8 +14,6 @@ export interface Course {
   videoUrl?: string;
   displayTags?: string[];
   enrolled?: boolean; 
-  
-  //New
   avgRating?: number|null;
   preRequisite?: string;
 }

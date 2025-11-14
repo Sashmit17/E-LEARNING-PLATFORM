@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Course } from '../models/course';
 
 @Injectable({
@@ -21,13 +21,6 @@ export class CourseService {
       'Authorization': `Bearer ${token}`
     });
   }
-//   private getAuthHeaders(): HttpHeaders {
-    
-//   const token = localStorage.getItem('token');
-//   return new HttpHeaders({
-//     'Authorization': `Bearer ${token}`
-//   });
-// }
 
   getCourses(): Observable<Course[]> {
     return this.http.get<Course[]>(this.baseUrl);
