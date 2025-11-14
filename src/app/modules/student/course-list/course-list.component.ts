@@ -6,7 +6,7 @@ import { PaymentService } from '../../../services/payment.service';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
-declare var Razorpay: any; // ✅ Razorpay global declaration
+declare var Razorpay: any; 
 
 @Component({
   selector: 'app-course-list',
@@ -22,7 +22,7 @@ export class CourseListComponent implements OnInit {
   message = '';
   showPopup = false;
 
-  // payment related
+
   course: any;
   showModal = false;
   selectedCourse: any;
@@ -46,7 +46,6 @@ export class CourseListComponent implements OnInit {
     }
     this.load();
 
-    // optional: load course by id (if route param exists)
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.http.get(`http://localhost:8080/api/courses/${id}`).subscribe({
@@ -97,7 +96,6 @@ export class CourseListComponent implements OnInit {
     this.showPopup = false;
   }
 
-  // ✅ open modal before confirming payment
   confirmPurchase(course: any) {
     if (!course || !course.id) {
       console.error('Invalid course object:', course);
@@ -118,7 +116,7 @@ export class CourseListComponent implements OnInit {
     this.showModal = false;
   }
 
-  // ✅ Payment Logic (Razorpay + Backend)
+
   async makePayment() {
   const userRaw = localStorage.getItem('user');
   if (!userRaw || !this.selectedCourse) {
@@ -135,7 +133,7 @@ export class CourseListComponent implements OnInit {
   this.paymentService.processPayment(499).subscribe({
     next: (order: any) => {
       const options = {
-        key: 'rzp_test_RdGkzD23qpCkc7', // Test key
+        key: 'rzp_test_RdGkzD23qpCkc7', 
         amount: order.amount,
         currency: 'INR',
         name: 'INCO Learn',
@@ -144,26 +142,26 @@ export class CourseListComponent implements OnInit {
 
         handler: (response: any) => {
             this.ngZone.run(() => {
-          console.log('✅ Razorpay success:', response);
+          console.log(' Razorpay success:', response);
 
-          // Stop loader immediately
+          
           this.isProcessing = false;
 
-          // Enroll the student after successful payment
+          
           this.enroll(courseId);
 
-          // Update UI
+          
           this.paymentSuccess = true;
           this.transactionId = response.razorpay_payment_id;
 
-          // Hide modal after short delay
+          
           setTimeout(() => {
             this.showModal = false;
             document.body.style.overflow = 'auto';
           }, 800);
 
           this.load();
-         }); // refresh courses
+         }); 
         },
 
         prefill: {
@@ -194,7 +192,6 @@ export class CourseListComponent implements OnInit {
 
 
 
-  // ✅ Load Razorpay script dynamically
   loadRazorpayScript() {
     return new Promise((resolve) => {
       if (document.getElementById('razorpay-script')) {

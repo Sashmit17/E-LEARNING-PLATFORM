@@ -37,7 +37,6 @@
               <small class=" fw-semibold text-dark">
                 ⭐ {{ c.avgRating }} ({{ c.studentsCount }})
               </small>
-              <!-- <span class="fw-bold text-success">({{ c.studentsCount }})</span> -->
             </div>
 
             <button *ngIf="!c.enrolled" class="btn btn-sm btn-success w-100"
@@ -53,7 +52,7 @@
         </div>
       </div>
     </div>
-     <!-- Payment Modal -->
+     
             <div class="payment-modal" [hidden]="!showModal">
               <div class="modal-content">
                 <h3>Confirm Your Purchase</h3>
@@ -71,7 +70,7 @@
                 </div>
             
                 <div *ngIf="paymentSuccess" class="success">
-                  <p>✅ Payment Successful!</p>
+                  <p> Payment Successful!</p>
                   <p>Transaction ID: {{ transactionId }}</p>
                   <button (click)="closeModal()">Close</button>
                 </div>
