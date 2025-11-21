@@ -14,6 +14,10 @@ declare var bootstrap: any;
 export class LoginComponentComponent implements OnInit {
 
   
+<<<<<<< HEAD
+=======
+  
+>>>>>>> c37ec968b47518a737c22a79867cbdc6bb1bf798
   loginForm!: FormGroup;
 
   constructor(
@@ -40,19 +44,17 @@ export class LoginComponentComponent implements OnInit {
           const successModal = new bootstrap.Modal(modalEl);
           successModal.show();
 
-          // Wait for user to click "Ok"
-          const okBtn = document.getElementById('successModalOkBtn');
-          if (okBtn) {
-            okBtn.addEventListener('click', () => {
-              if (response.role === 'STUDENT') {
-                this.router.navigate(['student'], { queryParams: { id: response.id } });
-              } else if (response.role === 'INSTRUCTOR') {
-                this.router.navigate(['instructor'], { queryParams: { id: response.id } });
-              } else {
-                this.router.navigate(['home']);
-              }
-            }, { once: true }); // ensures listener runs only once
-          }
+          setTimeout(() => {
+            successModal.hide();
+
+            if (response.role === 'STUDENT') {
+              this.router.navigate(['student'], { queryParams: { id: response.id } });
+            } else if (response.role === 'INSTRUCTOR') {
+              this.router.navigate(['instructor'], { queryParams: { id: response.id } });
+            } else {
+              this.router.navigate(['home']);
+            }
+          }, 1000);
         }
       },
       error: (err) => {
@@ -62,11 +64,16 @@ export class LoginComponentComponent implements OnInit {
         if (errorEl) {
           const errorModal = new bootstrap.Modal(errorEl);
           errorModal.show();
+
+          setTimeout(() => {
+            errorModal.hide();
+          }, 3000);
         }
       }
     });
   }
 }
+
 
 
   get f() {

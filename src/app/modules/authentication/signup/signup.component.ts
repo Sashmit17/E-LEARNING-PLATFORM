@@ -19,7 +19,16 @@ export class SignupComponent {
     this.signupForm = this.formBuilder.group({
   fullName: ['', [Validators.required,Validators.pattern(/^[A-Za-z\s]+$/)]],
   email: ['', [Validators.required, Validators.email]],
-  mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+  // mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+
+
+ mobile: ['', [
+    Validators.required, 
+    Validators.pattern(/^[0-9]+$/), // This FAILS if any non-digit character is used.
+    Validators.minLength(10),       // This FAILS if less than 10 digits are used.
+    Validators.maxLength(10)        // This FAILS if more than 10 digits are used.
+]],
+
   password: ['', [
     Validators.required,
     Validators.minLength(8),
@@ -31,27 +40,37 @@ export class SignupComponent {
   }
 
  signUp() {
-
-  
   if (this.signupForm.valid) {
     const newUser = this.signupForm.value;
-    console.log(JSON.stringify(newUser)+" signupform")
+    console.log(JSON.stringify(newUser) + " signupform");
     newUser.role = newUser.role.toUpperCase();
-    this.authService.signup(this.signupForm.value).subscribe({
-      next: ()=>{
-        // alert("Signup Successfull");
-         new bootstrap.Modal(document.getElementById('statusSuccessModal')).show();
-        this.signupForm.reset();
-        this.router.navigate(['/login'])
-      },
-      error:() =>{
-        // alert('Something went wrong')
-        new bootstrap.Modal(document.getElementById('statusErrorsModal')).show()
-      }
 
+    this.authService.signup(this.signupForm.value).subscribe({
+      next: () => {
+        const successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+        successModal.show();
+
+        // Auto-close after 2 seconds
+        setTimeout(() => {
+          successModal.hide();
+          this.router.navigate(['/login']);
+        }, 1000);
+
+        this.signupForm.reset();
+      },
+      error: () => {
+        const errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
+        errorModal.show();
+
+        // Auto-close after 2 seconds
+        setTimeout(() => {
+          errorModal.hide();
+        }, 1000);
+      }
     });
   }
 }
+
 
 
  get f() {

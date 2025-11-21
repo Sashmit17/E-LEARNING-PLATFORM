@@ -7,10 +7,10 @@ import { Enrollment } from '../../../models/enrollment';
 import { switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { AssessmentService } from '../../../services/assessment.service';
-
+ 
 import { AnnouncementService } from '../../../services/announcement.service';
-import { Announcement } from '../../../models/announcement'; 
-
+import { Announcement } from '../../../models/announcement';
+ 
 @Component({
   selector: 'app-course-player',
   standalone:false,
@@ -27,18 +27,19 @@ export class CoursePlayerComponent implements OnInit {
   isDone = false;
   currentRating: number | null = null;
   announcements: Announcement[] = [];
-
+ 
+  // --- ADD THESE NEW PROPERTIES FOR THE SIMPLE POPUP ---
   simpleToastMessage: string = '';
   showSimpleToast: boolean = false;
-
-  
+ 
+  // UI state
   currentTab: 'overview'|'notes'|'reviews'|'assessments'|'announcements' = 'overview';
   notesText = '';
   assessments: any[] = [];
-  reviews: any[] = []; 
-
+  reviews: any[] = []; // simple local shape { user, rating, comment, date }
+ 
   @ViewChild('videoRef') videoRef!: ElementRef<HTMLVideoElement>;
-
+ 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -47,51 +48,52 @@ export class CoursePlayerComponent implements OnInit {
     private assessmentSvc: AssessmentService,
      private announcementSvc: AnnouncementService
   ) {}
-
+ 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('courseId');
     this.courseId = idParam ? Number(idParam) : NaN;
     const q = this.route.snapshot.queryParamMap.get('enrollmentId');
     this.enrollmentId = q ? Number(q) : undefined;
-
+ 
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     this.studentId = user?.id ?? null;
-
+ 
     if (this.courseId) {
       this.catalog.getCourse(this.courseId).subscribe(c => this.course = c);
        this.announcementSvc.getAnnouncementsForCourse(this.courseId)
     .subscribe(list => this.announcements = list || []);
-
+ 
     }
-
+ 
     this.loadNotes();
     this.resolveEnrollment().subscribe();
-
+ 
+    // fetch assessments related to this course (if your service supports it)
     this.assessmentSvc.getAssessments().subscribe(list => {
       
       this.assessments = (list || []).filter((a: any) => !a.courseId || Number(a.courseId) === Number(this.courseId));
     }, err => {
       this.assessments = [];
     });
-
-   
-    this.reviews = []; 
+ 
+    // placeholder: fetch reviews - if you have a reviews endpoint replace this
+    this.reviews = []; // can be loaded from NotificationService or a new ReviewService
   }
-
+ 
   private showSimpleNotification(message: string) {
-     this.simpleToastMessage = message;
-     this.showSimpleToast = true;
-
-     
-     setTimeout(() => {
+    this.simpleToastMessage = message;
+    this.showSimpleToast = true;
+ 
+    // Hide the notification after 4 seconds
+    setTimeout(() => {
       this.showSimpleToast = false;
-      }, 1500);
-   }
-
+    }, 1000);
+  }
+ 
   setTab(t: 'overview'|'notes'|'reviews'|'assessments'|'announcements') {
     this.currentTab = t;
   }
-
+ 
   private resolveEnrollment() {
     if (this.enrollmentId) {
       return this.enrollSvc.getEnrollmentsByStudent(this.studentId ?? 0).pipe(
@@ -103,11 +105,11 @@ export class CoursePlayerComponent implements OnInit {
         })
       );
     }
-
+ 
     if (!this.studentId) {
       return of(null);
     }
-
+ 
     return this.enrollSvc.findEnrollmentForStudent(this.studentId, this.courseId).pipe(
       switchMap(found => {
         if (found) {
@@ -128,13 +130,13 @@ export class CoursePlayerComponent implements OnInit {
       })
     );
   }
-
+ 
   private refreshFlags() {
     this.isWatched = !!this.enrollment?.watched;
     this.isDone = !!this.enrollment?.done || (this.enrollment?.status === 'completed');
     this.currentRating = this.enrollment?.rating ?? null;
   }
-
+ 
   onVideoEnded() {
     if (!this.enrollmentId) return;
     const videoEl = this.videoRef?.nativeElement;
@@ -149,7 +151,7 @@ export class CoursePlayerComponent implements OnInit {
       }
     });
   }
-
+ 
   markDoneClicked() {
     if (!this.enrollmentId) { alert('Enrollment not found'); return; }
     this.enrollSvc.markDone(this.enrollmentId).subscribe({
@@ -163,7 +165,7 @@ export class CoursePlayerComponent implements OnInit {
         this.showSimpleNotification(err?.error?.message || 'Cannot mark done: ensure you watched the course first.');      }
     });
   }
-
+ 
   onStarClick(star: number) {
     if (!this.enrollmentId) { alert('Enrollment not found'); return; }
     if (!this.isDone) { alert('Complete the course before rating.'); return; }
@@ -182,11 +184,11 @@ export class CoursePlayerComponent implements OnInit {
       }
     });
   }
-
+ 
   private getNotesKey() {
     return `course_${this.courseId}_notes_student_${this.studentId || 'guest'}`;
   }
-
+ 
   loadNotes() {
     try {
       const k = this.getNotesKey();
@@ -196,7 +198,7 @@ export class CoursePlayerComponent implements OnInit {
       this.notesText = '';
     }
   }
-
+ 
   saveNotes() {
     try {
       const k = this.getNotesKey();
@@ -207,25 +209,25 @@ export class CoursePlayerComponent implements OnInit {
       this.showSimpleNotification('Failed to save notes.');
     }
   }
-
+ 
   clearNotes() {
     this.notesText = '';
     try {
       localStorage.removeItem(this.getNotesKey());
     } catch {}
   }
-
+ 
   togglePlay() {
     const v = this.videoRef?.nativeElement;
     if (!v) return;
     if (v.paused) v.play();
     else v.pause();
   }
-
+ 
   continueLearning() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
+ 
   downloadResources() {
     if (this.course?.preRequisite) {
       console.log(this.course.preRequisite);
@@ -235,3 +237,5 @@ export class CoursePlayerComponent implements OnInit {
     }
   }
 }
+ 
+ 
