@@ -144,7 +144,6 @@ export class CourseListComponent implements OnInit {
             this.ngZone.run(() => {
           console.log(' Razorpay success:', response);
 
-          
           this.isProcessing = false;
 
           
