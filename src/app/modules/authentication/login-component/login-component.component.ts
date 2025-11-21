@@ -14,10 +14,7 @@ declare var bootstrap: any;
 export class LoginComponentComponent implements OnInit {
 
   
-<<<<<<< HEAD
-=======
   
->>>>>>> c37ec968b47518a737c22a79867cbdc6bb1bf798
   loginForm!: FormGroup;
 
   constructor(
